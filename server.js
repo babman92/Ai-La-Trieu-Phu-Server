@@ -29,6 +29,9 @@ var arrMoney = [
     "30.000.000", "40.000.000", "60.000.000", "85.000.000", "150.000.000"
 ];
 
+app.get('/', function (req, res) {
+  res.sendfile(__dirname + '/index.html');
+});
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
 
