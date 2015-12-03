@@ -1,3 +1,0 @@
-﻿# ALTP_SERVER
-
-
