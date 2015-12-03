@@ -284,6 +284,6 @@ function finishGame(listUserInRoom, level) {
 
 http.listen(process.env.PORT || 2015, function () {
     roomMng.createListRoom(15);
-    console.log('listen on port 2015...');
+    console.log('listen on' + process.env.IP +' at port ' + process.env.PORT);
 });
 
