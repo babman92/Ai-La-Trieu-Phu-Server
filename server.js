@@ -285,8 +285,11 @@ function finishGame(listUserInRoom, level) {
 http.listen(process.env.PORT || 2015, function () {
     roomMng.createListRoom(15);
     console.log('===========================================');
-    console.log(require('ip').address());
+    console.log('IP:  '+require('ip').address());
     console.log('===========================================');
+    var url = require("url");
+    var proxy = url.parse(process.env.QUOTAGUARDSTATIC_URL);
+    console.log('PROXY: '+proxy);
     console.log(process.env);
     console.log('===========================================');
     console.log('listen on ' + process.env.IP +' at port ' + process.env.PORT);
