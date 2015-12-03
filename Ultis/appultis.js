@@ -1,6 +1,6 @@
 ﻿module.exports = AppUltis;
 var base64 = require('base-64');
-var utf8 = require('utf8');
+//var utf8 = require('utf8');
 
 function AppUltis() { }
 
@@ -20,9 +20,9 @@ AppUltis.prototype.encodeBase64 = function (plainText) {
 }
 
 AppUltis.prototype.encodeBase64FromUtf8 = function (plainText) {
-    var bytes = utf8.encode(plainText);
-    var encoded = base64.encode(bytes);
-    return encoded;
+    //var bytes = utf8.encode(plainText);
+    //var encoded = base64.encode(bytes);
+    return plainText;
 }
 
 AppUltis.prototype.getNumberUserReady = function (listUserInRoom) {

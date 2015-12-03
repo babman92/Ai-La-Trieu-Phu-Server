@@ -22,7 +22,7 @@ var Question = require('./Entities/question.js');
 var AppUltis = require('./Ultis/appultis.js');
 var appultis = new AppUltis();
 var base64 = require('base-64');
-var utf8 = require('utf8');
+//var utf8 = require('utf8');
 var arrMoney = [
     "200.000", "400.000", "600.000", "1.000.000", "2.000.000",
     "3.000.000", "6.000.000", "10.000.000", "14.000.000", "22.000.000",
