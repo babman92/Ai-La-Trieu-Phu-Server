@@ -1,12 +1,30 @@
 {
-  "name": "ALTP_SERVER",
-  "version": "0.0.0",
-  "description": "ALTP_SERVER",
+  "name": "AiLaTrieuPhuServer",
+  "version": "1.0.0",
+  "description": "School Project",
   "main": "app.js",
   "author": {
-    "name": "duy tuan",
-    "email": ""
+    "name": "Nguyen Duy Tuan",
+    "email": "tuannd92@outlook.com"
   },
+  "engines":{
+    "node": "4.2.1",
+    "npm": "2.14.7"
+  },
+  "scripts":{
+      "start": "node server.js",
+      "test": "mocha",
+      "postinstall": "bower install && grunt build"
+    },
+  "license" : "BSD-3-Clause",
+  "contributors": [{
+      "name": "Nguyen Duy Tuan",
+      "email":"tuannd92@outlook.com"
+    }],
+    "respository": {
+      "type":"git",
+      "url": "https://github.com/babman92/Ai-La-Trieu-Phu-Server/"
+    },
   "dependencies": {
     "express": "^4.13.3",
     "mysql": "^2.9.0",
@@ -14,5 +32,7 @@
     "underscore": "^1.8.3",
     "uft8": "^2.1.1",
     "base-64": "^0.1.0"
-  }
+  },
+  "subdomain": "nineknowlegde",
+  "analyze":"true",
 }
