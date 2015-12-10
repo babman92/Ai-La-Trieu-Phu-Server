@@ -30,7 +30,8 @@
     "underscore": "^1.8.3",
     "base-64": "^0.1.0",
     "ip": "^1.1.0",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "ws": "0.8.1"
   },
   "subdomain": "nineknowlegde",
   "analyze":"true"
