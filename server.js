@@ -1,7 +1,8 @@
 var express = require('express');
 var app = express();
 var http = require('http');
-var port = process.env.PORT || 5000;
+//var port = process.env.PORT || 5000;
+var port = 5000;
 var io = require('socket.io')(http);
 var fs = require('fs');
 var constant = require('./Configs/Constant.js');
@@ -32,33 +33,48 @@ var arrMoney = [
 ];
 
 app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/index.html');
+    res.send('welcome' + req);
+    //res.sendfile(__dirname + '/index.html');
 });
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
 
 var WebsocketServer = require('ws').Server;
 
-app.use(express.static(__dirname + '/'));
 var server = http.createServer(app);
 server.listen(port);
 console.log('http server listening on %d', port);
 var hostPC;
-var wss = new WebsocketServer({server : server});
+var wss = new WebsocketServer({ server : server });
 console.log('websocket server listening created');
 roomMng.createListRoom(15);
 
+var store = require('memory-store');
+var connect = require('connect');
+var session = require('express-session');
+var store = session.MemoryStore;
+
+app.use(session({ secret: 'tuannd92', key: 'sid' }));
+
 wss.on(global.client_connect, function (client) {
+    console.log();
+    //console.log(client.upgradeReq.headers.sec-websockey-key);
     console.log('a user connected');
+    
     userMng.initUser(client);
     
-    client.on(global.client_disconnect, function () {
+    client.on(global.client_disconnect, function (res, req) {
         userMng.removeUserById(client.id);
         console.log('a user disconnected: ' + client.id);
     });
     
-    client.on(global.client_message, function (msg) {
-        var jsonData = (msg);
+    client.on('close', function () {
+        userMng.removeUserById(client.id);
+        console.log('a user disconnected: ' + client.id);
+    });
+    
+    client.on('message', function (msg) {
+        var jsonData = JSON.parse(msg);
         var command = jsonData['command'];
         console.log(command);
         switch (command) {
@@ -73,7 +89,7 @@ wss.on(global.client_connect, function (client) {
                 clientLogin(username, password);
                 //---
                 userMng.setUserName(client.id, msg);
-                client.emit('server.list.room', roomMng.getListRoomJson());
+                client.send('server.list.room', roomMng.getListRoomJson());
                 break;
             case global.client_choose_game:
                 break;
@@ -95,7 +111,7 @@ wss.on(global.client_connect, function (client) {
             case global.client_get_listroom:
                 var listRoom = roomMng.getListRoomJson();
                 console.log(listRoom);
-                client.emit(global.server_send_listroom, listRoom);
+                client.send(global.server_send_listroom, listRoom);
                 break;
             case global.client_ready_to_room:
                 clientReady(client, msg);
@@ -170,7 +186,7 @@ function clientReady(client, data) {
             status: true,
             message: 'You are ready! waiting for new player'
         }
-        client.emit(global.server_to_room_confirm_ready, data);
+        client.send(global.server_to_room_confirm_ready, data);
     }
 }
 
@@ -181,7 +197,7 @@ function clientGetQuestion(client, level) {
         var question = new Question();
         question.loadQuestionNormal(row);
         console.log(question);
-        client.emit(global.server_send_question, question);
+        client.send(global.server_send_question, question);
     });
 }
 
@@ -193,13 +209,13 @@ function clientAnswer(client, questionId, answer) {
             var result = {
                 result: true
             }
-            client.emit(global.server_confirm_answer, result);
+            client.send(global.server_confirm_answer, result);
         }
         else {
             var result = {
                 result: false
             }
-            client.emit(global.server_confirm_answer, result);
+            client.send(global.server_confirm_answer, result);
         }
     });
 }

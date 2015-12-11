@@ -36,8 +36,6 @@ app.get('/', function (req, res) {
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
 
-var WebsocketServer = require('ws').Server;
-
 app.use(express.static(__dirname + '/'));
 var server = http.createServer(app);
 server.listen(port);
