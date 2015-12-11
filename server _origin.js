@@ -1,6 +1,5 @@
-var express = require('express');
-var app = express();
-var http = require('http');
+var app = require('express')();
+var http = require('http').Server(app);
 var port = process.env.PORT || 5000;
 var io = require('socket.io')(http);
 var fs = require('fs');
@@ -42,13 +41,8 @@ var WebsocketServer = require('ws').Server;
 app.use(express.static(__dirname + '/'));
 var server = http.createServer(app);
 server.listen(port);
-console.log('http server listening on %d', port);
-var hostPC;
-var wss = new WebsocketServer({server : server});
-console.log('websocket server listening created');
-roomMng.createListRoom(15);
 
-wss.on(global.client_connect, function (client) {
+io.on(global.client_connect, function (client) {
     console.log('a user connected');
     userMng.initUser(client);
     
@@ -295,11 +289,12 @@ function finishGame(listUserInRoom, level) {
     }
 }
 
-// http.listen(process.env.PORT || 2015, function () {
-//     console.log('===========================================');
-//     console.log('IP:  '+require('ip').address());
-//     console.log('===========================================');
-//     console.log('listen on ' + process.env.IP +' at port ' + process.env.PORT);
-//     console.log('===========================================');
-// });
+http.listen(process.env.PORT || 2015, function () {
+    roomMng.createListRoom(15);
+    console.log('===========================================');
+    console.log('IP:  '+require('ip').address());
+    console.log('===========================================');
+    console.log('listen on ' + process.env.IP +' at port ' + process.env.PORT);
+    console.log('===========================================');
+});
 
