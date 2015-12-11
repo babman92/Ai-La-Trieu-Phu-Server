@@ -1,28 +1,17 @@
-﻿var app = require('http').createServer(handler)
+﻿var express = require('express')();
+var app = require('http').createServer(express);
 var io = require('socket.io')(app);
 var fs = require('fs');
 var port = process.env.PORT || 5000;
-app.listen(port);
 
-function handler (req, res) {
-  fs.readFile(__dirname + '/index.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
-
-    res.writeHead(200);
-    res.end(data);
-  });
-}
+app.listen(port, function(){
+  console.log('server started at %d...', port);
+});
 
 io.on('connection', function (socket) {
-  console.log();
+  console.log('new user');
   socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
   });
 });
-
-console.log('server started at %d...', process.env.PORT);

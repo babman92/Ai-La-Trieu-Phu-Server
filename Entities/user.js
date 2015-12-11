@@ -2,7 +2,8 @@ module.exports = User;
 
 function User(socket, name) {
     this.Name = name;
-    this.SessionId = socket.upgradeReq.headers['sec-websocket-key']// socket.id;
+    this.SessionId = socket.id; 
+    //socket.upgradeReq.headers['sec-websocket-key']
     this.Connected = true;
 }
 

@@ -36,10 +36,6 @@ app.get('/', function (req, res) {
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
 
-app.use(express.static(__dirname + '/'));
-var server = http.createServer(app);
-server.listen(port);
-
 io.on(global.client_connect, function (client) {
     console.log('a user connected');
     userMng.initUser(client);
