@@ -1,5 +1,5 @@
 ﻿var redis = require("redis"),
-    client = redis.createClient();
+    client = redis.createClient(process.env.REDIS_URL);
 
 // if you'd like to select database 3, instead of 0 (default), call
 // client.select(3, function() { /* ... */ });
@@ -23,5 +23,6 @@ client.set('name', 'Hello Redis', client.print);
 
 client.get('name', function (err, reply) {
     if (err) { throw err; }
+    console.log();
     console.log(reply);
 }); 
