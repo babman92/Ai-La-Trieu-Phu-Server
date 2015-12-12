@@ -1,6 +1,6 @@
 ﻿module.exports = AppUltis;
 var base64 = require('base-64');
-//var utf8 = require('utf8');
+var math = require('math');
 
 function AppUltis() { }
 
@@ -58,3 +58,10 @@ AppUltis.prototype.getNumberUserAnswerRight = function (listUserInRoom, rightAns
     return number;
 }
 
+AppUltis.prototype.getRandomFloatNumber = function (min, max) {
+    return math.random() * (max - min) + min;
+}
+
+AppUltis.prototype.getRandomIntNumber = function (min, max) {
+    return math.floor(math.random() * (max - min) + min);
+}

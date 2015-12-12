@@ -25,6 +25,7 @@ var appultis = new AppUltis();
 var base64 = require('base-64');
 var _redis = require('redis');
 var redis = undefined;
+var math = require('math');
 
 var arrMoney = [
     "200.000", "400.000", "600.000", "1.000.000", "2.000.000",
@@ -164,17 +165,46 @@ function clientReady(client, data) {
     }
 }
 
+var numberQuestionLevel1 = 1917;
+var numberQuestionLevel2 = 1754;
+var numberQuestionLevel3 = 629;
+
 function clientGetQuestion(client, level) {
     level = parseInt((level - 1) / 5) + 1;
-    var query = 'SELECT * FROM ninequestions where level = ? ORDER BY rand() LIMIT 1';
-    conn.excuteUpdate(query, [level], function (row) {
-        var question = new Question();
-        question.loadQuestionNormal(row);
-        redis.set('keyunique', 'XXX', function (err, reply) {
-            console.log(reply);
-        });
-        console.log(question);
-        client.emit(global.server_send_question, question);
+    var idQuestion = 0;
+    var question = new Question();
+    switch (level) {
+        case 1:
+            idQuestion = appultis.getRandomIntNumber(1, numberQuestionLevel1);
+            break;
+        case 2:
+            idQuestion = appultis.getRandomIntNumber(numberQuestionLevel1 + 1 , numberQuestionLevel2);
+            break;
+        case 3:
+            idQuestion = appultis.getRandomIntNumber(numberQuestionLevel2 + 1, numberQuestionLevel3);
+            break;
+        default:
+            break;
+    }
+    
+    redis.get(idQuestion, function (err, result) {
+        if (!result) {
+            //get from database
+            var query = 'SELECT * FROM ninequestions where id = ?';
+            conn.excuteUpdate(query, [idQuestion], function (row) {
+                question.loadQuestionNormal(row);
+                redis.set(idQuestion, question, function (err, reply) {
+                    if (err) {
+                        console.log('Set data redis error...');
+                        throw err;
+                    }
+                });
+                client.emit(global.server_send_question, question);
+            });
+        }
+        else {
+            question = result;
+        }
     });
 }
 
@@ -295,31 +325,10 @@ http.listen(port, function () {
     console.log('listen on %s at port %d', ip, port);
     console.log('===========================================');
     
-    var redis = _redis.createClient(port, ip, { no_ready_check: true });
+    redis = _redis.createClient(process.env.REDIS_URL);
     
-    redis.on('connect', function () {
+    redis.on('connect', function (redis) {
         console.log('Connected to Redis');
-        if (redis.connected) {
-            
-            redis.set('Sayhello', 'Hello Redis', function (err, reply) {
-                console.log(reply);
-            });
-
-            //redis.set("test", "val", function (err) {
-            //    if (err) {
-            //        // Something went wrong
-            //        console.error("error");
-            //    } else {
-            //        redis.get("test", function (err, value) {
-            //            if (err) {
-            //                console.error("error");
-            //            } else {
-            //                console.log("Worked: " + value);
-            //            }
-            //        });
-            //    }
-            //});
-        }
     });
     
     redis.on('error', function (err) {
