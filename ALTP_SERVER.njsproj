@@ -40,7 +40,6 @@
     <Compile Include="Entities\user.js" />
     <Compile Include="Managers\roommanager.js" />
     <Compile Include="Managers\usermanager.js" />
-    <Compile Include="server _origin.js" />
     <Compile Include="server.js" />
     <Compile Include="server_websocket.js" />
     <Compile Include="test.js" />

@@ -1,17 +1,27 @@
-﻿var express = require('express')();
-var app = require('http').createServer(express);
-var io = require('socket.io')(app);
-var fs = require('fs');
-var port = process.env.PORT || 5000;
+﻿var redis = require("redis"),
+    client = redis.createClient();
 
-app.listen(port, function(){
-  console.log('server started at %d...', port);
+// if you'd like to select database 3, instead of 0 (default), call
+// client.select(3, function() { /* ... */ });
+
+client.on("error", function (err) {
+    console.log("Error " + err);
 });
 
-io.on('connection', function (socket) {
-  console.log('new user');
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-});
+//client.set("string key", "string val", redis.print);
+//client.hset("hash key", "hashtest 1", "some value", redis.print);
+//client.hset(["hash key", "hashtest 2", "some other value"], redis.print);
+//client.hkeys("hash key", function (err, replies) {
+//    console.log(replies.length + " replies:");
+//    replies.forEach(function (reply, i) {
+//        console.log("    " + i + ": " + reply);
+//    });
+//    client.quit();
+//});
+
+client.set('name', 'Hello Redis', client.print);
+
+client.get('name', function (err, reply) {
+    if (err) { throw err; }
+    console.log(reply);
+}); 

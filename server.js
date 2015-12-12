@@ -1,8 +1,6 @@
-var express = require('express');
-var app = express();
-var http = require('http');
-//var port = process.env.PORT || 5000;
-var port = 5000;
+var app = require('express')();
+var http = require('http').Server(app);
+var port = process.env.PORT || 5000;
 var io = require('socket.io')(http);
 var fs = require('fs');
 var constant = require('./Configs/Constant.js');
@@ -25,7 +23,9 @@ var Question = require('./Entities/question.js');
 var AppUltis = require('./Ultis/appultis.js');
 var appultis = new AppUltis();
 var base64 = require('base-64');
-//var utf8 = require('utf8');
+var _redis = require('redis');
+var redis = undefined;
+
 var arrMoney = [
     "200.000", "400.000", "600.000", "1.000.000", "2.000.000",
     "3.000.000", "6.000.000", "10.000.000", "14.000.000", "22.000.000",
@@ -33,48 +33,22 @@ var arrMoney = [
 ];
 
 app.get('/', function (req, res) {
-    res.send('welcome' + req);
-    //res.sendfile(__dirname + '/index.html');
+    res.sendfile(__dirname + '/index.html');
 });
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
 
-var WebsocketServer = require('ws').Server;
-
-var server = http.createServer(app);
-server.listen(port);
-console.log('http server listening on %d', port);
-var hostPC;
-var wss = new WebsocketServer({ server : server });
-console.log('websocket server listening created');
-roomMng.createListRoom(15);
-
-var store = require('memory-store');
-var connect = require('connect');
-var session = require('express-session');
-var store = session.MemoryStore;
-
-app.use(session({ secret: 'tuannd92', key: 'sid' }));
-
-wss.on(global.client_connect, function (client) {
-    console.log();
-    //console.log(client.upgradeReq.headers.sec-websockey-key);
+io.on(global.client_connect, function (client) {
     console.log('a user connected');
-    
     userMng.initUser(client);
     
-    client.on(global.client_disconnect, function (res, req) {
+    client.on(global.client_disconnect, function () {
         userMng.removeUserById(client.id);
         console.log('a user disconnected: ' + client.id);
     });
     
-    client.on('close', function () {
-        userMng.removeUserById(client.id);
-        console.log('a user disconnected: ' + client.id);
-    });
-    
-    client.on('message', function (msg) {
-        var jsonData = JSON.parse(msg);
+    client.on(global.client_message, function (msg) {
+        var jsonData = (msg);
         var command = jsonData['command'];
         console.log(command);
         switch (command) {
@@ -89,7 +63,7 @@ wss.on(global.client_connect, function (client) {
                 clientLogin(username, password);
                 //---
                 userMng.setUserName(client.id, msg);
-                client.send('server.list.room', roomMng.getListRoomJson());
+                client.emit('server.list.room', roomMng.getListRoomJson());
                 break;
             case global.client_choose_game:
                 break;
@@ -111,7 +85,7 @@ wss.on(global.client_connect, function (client) {
             case global.client_get_listroom:
                 var listRoom = roomMng.getListRoomJson();
                 console.log(listRoom);
-                client.send(global.server_send_listroom, listRoom);
+                client.emit(global.server_send_listroom, listRoom);
                 break;
             case global.client_ready_to_room:
                 clientReady(client, msg);
@@ -186,7 +160,7 @@ function clientReady(client, data) {
             status: true,
             message: 'You are ready! waiting for new player'
         }
-        client.send(global.server_to_room_confirm_ready, data);
+        client.emit(global.server_to_room_confirm_ready, data);
     }
 }
 
@@ -196,8 +170,11 @@ function clientGetQuestion(client, level) {
     conn.excuteUpdate(query, [level], function (row) {
         var question = new Question();
         question.loadQuestionNormal(row);
+        redis.set('keyunique', 'XXX', function (err, reply) {
+            console.log(reply);
+        });
         console.log(question);
-        client.send(global.server_send_question, question);
+        client.emit(global.server_send_question, question);
     });
 }
 
@@ -209,13 +186,13 @@ function clientAnswer(client, questionId, answer) {
             var result = {
                 result: true
             }
-            client.send(global.server_confirm_answer, result);
+            client.emit(global.server_confirm_answer, result);
         }
         else {
             var result = {
                 result: false
             }
-            client.send(global.server_confirm_answer, result);
+            client.emit(global.server_confirm_answer, result);
         }
     });
 }
@@ -311,11 +288,41 @@ function finishGame(listUserInRoom, level) {
     }
 }
 
-// http.listen(process.env.PORT || 2015, function () {
-//     console.log('===========================================');
-//     console.log('IP:  '+require('ip').address());
-//     console.log('===========================================');
-//     console.log('listen on ' + process.env.IP +' at port ' + process.env.PORT);
-//     console.log('===========================================');
-// });
+http.listen(port, function () {
+    var ip = require('ip').address();
+    roomMng.createListRoom(15);
+    console.log('===========================================');
+    console.log('listen on %s at port %d', ip, port);
+    console.log('===========================================');
+    
+    var redis = _redis.createClient(port, ip, { no_ready_check: true });
+    
+    redis.on('connect', function () {
+        console.log('Connected to Redis');
+        if (redis.connected) {
+            
+            redis.set('Sayhello', 'Hello Redis', function (err, reply) {
+                console.log(reply);
+            });
 
+            //redis.set("test", "val", function (err) {
+            //    if (err) {
+            //        // Something went wrong
+            //        console.error("error");
+            //    } else {
+            //        redis.get("test", function (err, value) {
+            //            if (err) {
+            //                console.error("error");
+            //            } else {
+            //                console.log("Worked: " + value);
+            //            }
+            //        });
+            //    }
+            //});
+        }
+    });
+    
+    redis.on('error', function (err) {
+        console.log(err);
+    });
+});
