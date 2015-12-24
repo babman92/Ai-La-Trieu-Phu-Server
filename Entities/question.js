@@ -1,7 +1,6 @@
 ﻿module.exports = Question;
 
-var AppUltis = require('../Ultis/appultis.js');
-var appultis = new AppUltis();
+var appultis = require('../Ultis/appultis.js');
 
 function Question() { }
 

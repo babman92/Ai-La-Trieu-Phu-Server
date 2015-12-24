@@ -12,7 +12,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>7308f2df-8222-4c1b-86f6-78f0cc265527</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>server.js</StartupFile>
+    <StartupFile>altp_server.js</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -30,20 +30,36 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="altp_server.js" />
     <Compile Include="Components\Login.js" />
     <Compile Include="Components\SignUp.js" />
     <Compile Include="Configs\Constant.js" />
     <Compile Include="Connectors\connection.js" />
+    <Compile Include="Controllers\Client\UserGetRecordManager.js" />
+    <Compile Include="Controllers\Server\ServerFinishMatchController.js" />
+    <Compile Include="Controllers\Server\ServerFinishQuestionController.js" />
+    <Compile Include="Controllers\Server\ServerSendQuestionController.js" />
+    <Compile Include="Controllers\Server\ServerStartMatchController.js" />
+    <Compile Include="Controllers\Client\UserAnswerQuestionController.js" />
+    <Compile Include="Controllers\Client\UserChooseRoomController.js" />
+    <Compile Include="Controllers\Client\UserConnectedController.js" />
+    <Compile Include="Controllers\Client\UserDisconnectedController.js" />
+    <Compile Include="Controllers\Client\UserGetQuestionController.js" />
+    <Compile Include="Controllers\Client\UserLeaveRoomController.js" />
+    <Compile Include="Controllers\Client\UserReadyToPlayController.js" />
+    <Compile Include="Controllers\Client\UserReconnectController.js" />
+    <Compile Include="Controllers\Client\UserSaveRecordController.js" />
+    <Compile Include="Controllers\Client\UserStartMatchController.js" />
     <Compile Include="Entities\message.js" />
     <Compile Include="Entities\question.js" />
     <Compile Include="Entities\room.js" />
     <Compile Include="Entities\user.js" />
     <Compile Include="Managers\roommanager.js" />
     <Compile Include="Managers\usermanager.js" />
-    <Compile Include="server.js" />
-    <Compile Include="server_websocket.js" />
     <Compile Include="test.js" />
     <Compile Include="Ultis\appultis.js" />
+    <Compile Include="Ultis\LogUltis.js" />
+    <Compile Include="Ultis\RedisUltis.js" />
     <Content Include="Configs\dbconfig.json" />
     <Content Include="Configs\messagesample.json" />
     <Content Include="Configs\rooms.json" />
@@ -54,8 +70,11 @@
     <Folder Include="Components\" />
     <Folder Include="Configs\" />
     <Folder Include="Connectors\" />
+    <Folder Include="Controllers\Server\" />
+    <Folder Include="Controllers\Client\" />
     <Folder Include="Entities\" />
     <Folder Include="Managers\" />
+    <Folder Include="Controllers\" />
     <Folder Include="Ultis\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

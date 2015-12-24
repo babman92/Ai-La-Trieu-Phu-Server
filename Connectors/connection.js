@@ -1,9 +1,13 @@
-﻿module.exports = Connection;
+﻿module.exports = new Connection();
 
 var mysql = require('mysql');
 var fs = require('fs');
 
 function Connection() {
+    return this;
+}
+
+Connection.prototype.initConnectionToDB = function () {
     var config = this.readConfig();
     var dataJson = JSON.parse(config);
     //var dbInfo = {
@@ -99,27 +103,4 @@ Connection.prototype.excuteUpdate = function (query, data, finish) {
                 connection.release();
         }
     });
-}
-
-Connection.prototype.demo = function () {
-    //conn.connectToDb();
-    //conn.excuteQuery('select * from ninequestions limit 1', function (data) {
-    //    console.log(data);
-    //});
-    
-    //var user = {
-    //    username: 'tuannd',
-    //    password: '123',
-    //    money: 1000,
-    //    fullname: 'Nguyen Duy Tuan'
-    //}
-
-    //var query = 'insert into nine_users set ?';
-    
-    //var query = 'update nine_users set username = ? where id = ?';
-    
-    //var query = 'delete from nine_users where id = ?';
-    //conn.excuteUpdate(query, [1], function (data) {
-    //    console.log(data);
-    //});
 }

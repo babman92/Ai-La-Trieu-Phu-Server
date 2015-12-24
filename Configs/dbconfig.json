@@ -1,5 +1,5 @@
 {
-	"connectionLimit ": 10000,
+	"connectionLimit ": 1000000,
     "host": "112.78.2.80",
     "user": "gen6e_nineadm",
     "password": "A@123456",
