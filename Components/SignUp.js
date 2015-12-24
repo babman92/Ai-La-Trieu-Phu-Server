@@ -1,60 +1,23 @@
-﻿module.exports = new SignUp();
+﻿module.exports = SignUp;
 
 var crypto = require('crypto');
+var Connection = require('../Connectors/connection.js');
+var conn = new Connection();
 
-function SignUp() {
-    return this;
-}
+function SignUp() { }
 
-SignUp.prototype.signUp = function (conn, username, pass, callback) {
-    var code = '';
-    if (pass) {
-        var md5sum = crypto.createHash('md5');
-        code = md5sum.update(pass).digest('hex');
-    }
+SignUp.prototype.excuteSignup = function (username, pass) {
+    var md5sum = crypto.createHash('md5');
+    var code = md5sum.update(pass).digest('hex');
+    console.log('pass md5: ' + code);
     var user = {
         username: username,
         password: code
     }
-    var query = global.query_set_user;
+    var query = 'insert into nine_users set ?';
     conn.excuteUpdate(query, user, function (row) {
-        if (callback != undefined)
-            callback(row);
-    });
-}
-
-SignUp.prototype.excuteSignup = function (conn, username, pass, client) {
-    this.checkUserExist(username, function (row) {
-        var data = {};
-        data.username = username;
-        if (underscore.isEmpty(row)) {
-            //new user
-            this.signUp(conn, username, password, function (row) {
-                if (row != undefined) {
-                    data.status = true;
-                    data.message = 'Signup success.';
-                    client.emit(global.server_send_confirm_signup, data)
-                }
-                else {
-                    data.status = false;
-                    data.message = 'Error while sungup, please try again.';
-                    client.emit(global.server_send_confirm_signup, data)
-                }
-            });
+        if (row != undefined) {
+            console.log('new user sign up.' + user);
         }
-        else {
-            //user exist
-            data.status = false;
-            data.message = 'Username has exist, please choose other.';
-            client.emit(global.server_send_confirm_signup, data)
-        }
-    });
-}
-
-SignUp.prototype.checkUserExist = function (conn, username, callback) {
-    var query = global.query_get_user_by_username;
-    conn.excuteUpdate(query, username, function (data) {
-        if (callback != undefined)
-            callback(data);
     });
 }

@@ -1,11 +1,10 @@
-module.exports = new RoomManager();
+module.exports = RoomManager;
 
 var fs = require('fs');
 var Room = require('../Entities/room.js');
 
 function RoomManager() {
     this.listRoom = [];
-    return this;
 };
 
 RoomManager.prototype.createListRoom = function (number) {

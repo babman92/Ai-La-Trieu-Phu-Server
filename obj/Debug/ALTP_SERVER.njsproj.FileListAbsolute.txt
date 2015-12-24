@@ -1,4 +1,2 @@
 D:\ONEDRIVE\BACH KHOA\KI 11\DO AN\SOURCE\NODE.JS\Ailatrieuphu\ALTP_SERVER\ALTP_SERVER\obj\Debug\ALTP_SERVER.njsprojResolveAssemblyReference.cache
 D:\ONEDRIVE\BACH KHOA\KI 11\DO AN\SOURCE\NODE.JS\Ailatrieuphu\ALTP_SERVER\ALTP_SERVER\bin\Microsoft.NodejsTools.WebRole.dll
-D:\GITHUB\Ai-La-Trieu-Phu-Server\obj\Debug\ALTP_SERVER.njsprojResolveAssemblyReference.cache
-D:\GITHUB\Ai-La-Trieu-Phu-Server\bin\Microsoft.NodejsTools.WebRole.dll

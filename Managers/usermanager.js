@@ -1,10 +1,9 @@
-module.exports = new UserManager();
+module.exports = UserManager
 
 var User = require('../Entities/user.js');
 
 function UserManager() {
     this.listUser = [];
-    return this;
 }
 
 UserManager.prototype.initUser = function (socket) {
@@ -18,41 +17,22 @@ UserManager.prototype.addUser = function (user, room) {
 };
 
 UserManager.prototype.removeUser = function (user) {
-    this.removeUserById(user.getSessionId());
-    console.log('remove user by object');
+    this.listUser.pop(user);
 };
 
-UserManager.prototype.removeUserById = function (userId, removeDone) {
-    for (var i = this.listUser.length - 1; i >= 0 ; i--) {
-        var user = this.listUser[i]
-        if (user != undefined) {
-            if (user.getSessionId() == userId) {
-                var userRemoved = this.listUser.splice(i, 1)[0];
-                if (removeDone != undefined)
-                    removeDone(userRemoved);
-                break;
-            };
-        };
+UserManager.prototype.removeUserById = function (userId) {
+    var user = this.getUserById(userId);
+    if (user != undefined) {
+        this.removeUser(user);
+        console.log('remove user');
     };
 };
 
-UserManager.prototype.getUserById = function (userId, getUserDone) {
+UserManager.prototype.getUserById = function (userId) {
     for (var i = 0; i < this.listUser.length; i++) {
         var user = this.listUser[i]
         if (user != undefined) {
             if (user.getSessionId() == userId) {
-                if (getUserDone != undefined)
-                    getUserDone(user);
-            };
-        };
-    };
-};
-
-UserManager.prototype.getUserByName = function (username) {
-    for (var i = 0; i < this.listUser.length; i++) {
-        var user = this.listUser[i]
-        if (user != undefined) {
-            if (user.getName() == username) {
                 return user;
             };
         };
@@ -60,11 +40,10 @@ UserManager.prototype.getUserByName = function (username) {
 };
 
 UserManager.prototype.setUserName = function (userId, name) {
-    this.getUserById(userId, function (user) {
-        if (user != undefined) {
-            user.setName(name);
-        };
-    });
+    var user = this.getUserById(userId);
+    if (user != undefined) {
+        user.setName(name);
+    };
 };
 
 UserManager.prototype.sendMessageToListUser = function (io, command, message, listUserSelected) {
@@ -83,19 +62,18 @@ UserManager.prototype.sendMessageToListUser = function (io, command, message, li
 UserManager.prototype.getListUserByUser = function (userId) {
     console.log(userId);
     listUser = [];
-    this.getUserById(userId, function (user) {
-        if (userChoose != undefined) {
-            for (var i = 0; i < this.listUser.length; i++) {
-                var user = this.listUser[i];
-                if (user != undefined) {
-                    if (user.getRoomId() == userChoose.getRoomId()) {
-                        listUser.push(user);
-                    };
+    var userChoose = this.getUserById(userId);
+    if (userChoose != undefined) {
+        for (var i = 0; i < this.listUser.length; i++) {
+            var user = this.listUser[i];
+            if (user != undefined) {
+                if (user.getRoomId() == userChoose.getRoomId()) {
+                    listUser.push(user);
                 };
             };
         };
-        return listUser;
-    });
+    };
+    return listUser;
 };
 
 UserManager.prototype.getListUserByRoomId = function (roomId) {
@@ -118,8 +96,4 @@ UserManager.prototype.resetUserInRoom = function (listUser) {
             user.reset();
         };
     };
-}
-
-UserManager.prototype.getConcurency = function () {
-    return this.listUser.length;
 }

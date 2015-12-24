@@ -1,39 +1,23 @@
-﻿module.exports = new Login();
+﻿module.exports = Login;
 
 var crypto = require('crypto');
+var Connection = require('../Connectors/connection.js');
+var conn = new Connection();
 var underscore = require('underscore');
 
-function Login() { return this; }
+function Login() { }
 
-Login.prototype.login = function (conn, username, pass, excuteLoginDone) {
-    var code = '';
-    if (pass.length != 0) {
-        var md5sum = crypto.createHash('md5');
-        code = md5sum.update(pass).digest('hex');
-    }
-    var query = global.query_loginby_username_password;
+Login.prototype.excuteLogin = function (username, pass) {
+    var md5sum = crypto.createHash('md5');
+    var code = md5sum.update(pass).digest('hex');
+    var query = 'select * from nine_users where username = ? and password = ?';
     var data = [username, code];
     conn.excuteUpdate(query, data, function (row) {
-        console.log(row);
         if (underscore.isEmpty(row)) {
-            excuteLoginDone(false);
+            console.log('Login error...');
         }
         else {
-            excuteLoginDone(true);
+            console.log(row);           
         }
-    });
-}
-
-Login.prototype.excuteLogin = function (userManager, conn, username, pass, client) {
-    this.login(conn, username, pass, function (status) {
-        var message = { status: status };
-        if (status) {
-            userManager.setUserName(client.id, username);
-            message.message = 'Login success...';
-        }
-        else {
-            message.message = 'Login fail...';
-        }
-        client.emit(global.server_confirm_login, message);
     });
 }
