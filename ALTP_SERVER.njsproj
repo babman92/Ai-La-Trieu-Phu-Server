@@ -35,6 +35,7 @@
     <Compile Include="Components\SignUp.js" />
     <Compile Include="Configs\Constant.js" />
     <Compile Include="Connectors\connection.js" />
+    <Compile Include="Controllers\Client\UserGetListRoomController.js" />
     <Compile Include="Controllers\Client\UserGetRecordManager.js" />
     <Compile Include="Controllers\Server\ServerFinishMatchController.js" />
     <Compile Include="Controllers\Server\ServerFinishQuestionController.js" />

@@ -34,6 +34,8 @@ var userReadyToPlayController = require('./Controllers/Client/UserReadyToPlayCon
 var userReconnectController = require('./Controllers/Client/UserReconnectController.js');
 var userSaveRecordController = require('./Controllers/Client/UserSaveRecordController.js');
 var userStartMatchController = require('./Controllers/Client/UserStartMatchController.js');
+var userGetListRoomController = require('./Controllers/Client/UserGetListRoomController.js');
+
 var serverFinishMatchController = require('./Controllers/Server/ServerFinishMatchController.js');
 var serverFinishQuestionController = require('./Controllers/Server/ServerFinishQuestionController.js');
 var serverSendQuestionController = require('./Controllers/Server/ServerSendQuestionController.js');
@@ -74,8 +76,6 @@ io.on(global.client_connect, function (client) {
                 console.log(jsonData);
                 clientLogin(username, password, client);
                 break;
-            case global.client_choose_game:
-                break;
             case global.client_choose_room:
                 clientChooseRoom(client, msg);
                 break;
@@ -91,9 +91,7 @@ io.on(global.client_connect, function (client) {
                 clientAnswer(client, questionId, answer);
                 break;
             case global.client_get_listroom:
-                var listRoom = roomManager.getListRoomJson();
-                console.log(listRoom);
-                client.emit(global.server_send_listroom, listRoom);
+                userGetListRoomController.getListRoom(roomManager, client);
                 break;
             case global.client_ready_to_room:
                 clientReady(client, msg);
