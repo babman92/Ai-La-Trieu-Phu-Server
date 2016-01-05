@@ -58,7 +58,7 @@ global.server_to_room_confirm_ready = 'server.to.room.confirm.ready';
 global.server_to_room_start_game = 'server.to.room.start.game';
 global.server_to_room_client_leave = 'server.to.room.client.leave';
 //----------------------SQL-----------------------------------------------
-global.query_get_record = 'SELECT money, username FROM nine_record ORDER BY money DESC LIMIT 9';
+global.query_get_record = 'SELECT money, username FROM nine_record ORDER BY money DESC LIMIT 11';
 global.query_get_right_answer = 'SELECT casea FROM `ninequestions` where id = ?';
 global.query_get_record_user = 'select * from nine_record where username = ?';
 global.query_set_record_user = 'insert into nine_record (username, money) values (?,?)';

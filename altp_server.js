@@ -48,6 +48,11 @@ var Room = require('./Entities/room.js');
 //-------------end object--------------------------
 //=============end intenal===========================================
 
+app.get("/records", function(req, res){
+	userGetRecordManager.clientGetRecordHttp(conn, res);
+	//res.end("Hello World");
+});
+
 io.on(global.client_connect, function (client) {
     
     userConnectedController.initUser(userManager, client);
@@ -199,6 +204,10 @@ function clientLeaveRoom(roomId, client) {
 
 http.listen(port, function () {
     conn.initConnectionToDB();
+
+   	var welcome = fs.readFileSync('./welcome.txt').toString();
+   	console.log(welcome);
+
     var ip = require('ip').address();
     roomManager.createListRoom(global.room_default_quantity);
     console.log('===========================================');

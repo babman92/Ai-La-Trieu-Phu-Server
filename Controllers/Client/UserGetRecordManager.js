@@ -18,3 +18,16 @@ UserGetRecordController.prototype.clientGetRecord = function (conn, client) {
         logUtil.log(ex);
     }
 }
+
+UserGetRecordController.prototype.clientGetRecordHttp = function (conn, res) {
+    try {
+        conn.excuteQuery(global.query_get_record, function (data) {
+            var records = {
+                records : data
+            }
+            res.end(JSON.stringify(records));
+        });
+    } catch (ex) { 
+        logUtil.log(ex);
+    }
+}
