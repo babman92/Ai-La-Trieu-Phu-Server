@@ -17,14 +17,16 @@ SignUp.prototype.signUp = function (conn, username, pass, callback) {
         password: code
     }
     var query = global.query_set_user;
+    console.log(user);
+    console.log(query);
     conn.excuteUpdate(query, user, function (row) {
         if (callback != undefined)
             callback(row);
     });
 }
 
-SignUp.prototype.excuteSignup = function (conn, username, pass, client) {
-    this.checkUserExist(username, function (row) {
+SignUp.prototype.excuteSignup = function (conn, username, password, client, underscore) {
+    this.checkUserExist(conn, username, function (row) {
         var data = {};
         data.username = username;
         if (underscore.isEmpty(row)) {
@@ -56,5 +58,38 @@ SignUp.prototype.checkUserExist = function (conn, username, callback) {
     conn.excuteUpdate(query, username, function (data) {
         if (callback != undefined)
             callback(data);
+    });
+}
+
+SignUp.prototype.excuteSignupHttp = function (conn, username, password, res, underscore) {
+    this.checkUserExist(conn, username, function (row) {
+        var data = {};
+        data.username = username;
+        if (underscore.isEmpty(row)) {
+            //new user
+            var query = global.query_set_user;
+                var user = {
+                    username: username,
+                    password: password
+                }
+            conn.excuteUpdate(query, user, function (row) {
+                if (row != undefined) {
+                    data.status = true;
+                    data.message = 'Đăng kí thành công. ';
+                    res.end(JSON.stringify(data));
+                }
+                else {
+                    data.status = false;
+                    data.message = 'Có lỗi xảy ra, vui lòng thử lại sau.';
+                    res.end(JSON.stringify(data));
+                }
+            });
+        }
+        else {
+            //user exist
+            data.status = false;
+            data.message = 'Tên đã được sử dụng.';
+            res.end(JSON.stringify(data));
+        }
     });
 }

@@ -48,9 +48,21 @@ var Room = require('./Entities/room.js');
 //-------------end object--------------------------
 //=============end intenal===========================================
 
-app.get("/records", function(req, res){
+app.get("/altp/record/list", function(req, res){
 	userGetRecordManager.clientGetRecordHttp(conn, res);
 	//res.end("Hello World");
+});
+
+app.get("/altp/record/save", function(req, res){
+    console.log('user save record');
+    var username = req.param('user');
+    var money = req.param('money');
+    userSaveRecordController.clientSaveRecordHttp(conn, username, money, underscore, res);
+});
+
+app.get("/altp/user/register", function(req, res){
+    var username = req.param('user');
+    signup.excuteSignupHttp(conn, username, '', res, underscore);
 });
 
 io.on(global.client_connect, function (client) {
@@ -142,7 +154,7 @@ io.on(global.client_connect, function (client) {
 });
 
 function clientSignup(username, password, client) {
-    signup.excuteSignup(conn, username, password, client);
+    signup.excuteSignup(conn, username, password, client, underscore);
 }
 
 function clientLogin(username, password, client) {
