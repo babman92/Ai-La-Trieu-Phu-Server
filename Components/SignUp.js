@@ -55,9 +55,13 @@ SignUp.prototype.excuteSignup = function (conn, username, password, client, unde
 
 SignUp.prototype.checkUserExist = function (conn, username, callback) {
     var query = global.query_get_user_by_username;
+    console.log('check name: '+username);
     conn.excuteUpdate(query, username, function (data) {
         if (callback != undefined)
-            callback(data);
+        {
+            console.log(data);
+            callback(data);            
+        }        
     });
 }
 
