@@ -65,6 +65,13 @@ app.get("/altp/user/register", function(req, res){
     signup.excuteSignupHttp(conn, username, '', res, underscore);
 });
 
+app.get('/altp/app/config', function(req, res){
+	fs.readFile('./config.json', 'utf8', function(err, data){
+		//res.end(JSON.stringify(data));
+		res.end(data);
+	});
+});
+
 io.on(global.client_connect, function (client) {
     
     userConnectedController.initUser(userManager, client);
